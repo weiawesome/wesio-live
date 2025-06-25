@@ -1,4 +1,4 @@
-module weiawesome/wesio-live/libs
+module github.com/weiawesome/wesio-live/libs
 
 go 1.24.1
 
