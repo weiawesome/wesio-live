@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "wesio-live/libs/auth/proto";
+
+import "google/protobuf/timestamp.proto";
+
+// JWT 認證服務
+service JWTService {
+  // 生成 JWT Token
+  rpc GenerateToken(GenerateTokenRequest) returns (GenerateTokenResponse);
+  
+  // 驗證 JWT Token
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+  
+  // 刷新 Token
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+}
+
+// 用戶角色枚舉
+enum Role {
+  USER = 0;   // 普通用戶
+  ADMIN = 1;  // 管理員
+}
+
+// 生成 Token 請求
+message GenerateTokenRequest {
+  string user_id = 1;                  // 用戶 ID
+  string username = 2;                 // 用戶名
+  string email = 3;                    // 用戶郵箱
+  Role role = 4;                       // 用戶角色
+}
+
+// 生成 Token 回應
+message GenerateTokenResponse {
+  bool success = 1;                    // 是否成功
+  string access_token = 2;             // JWT Access Token
+  string refresh_token = 3;            // Refresh Token
+  google.protobuf.Timestamp access_expires_at = 4;  // Access Token 過期時間
+  google.protobuf.Timestamp refresh_expires_at = 5; // Refresh Token 過期時間
+  string error_message = 6;            // 錯誤消息
+}
+
+// 驗證 Token 請求
+message ValidateTokenRequest {
+  string token = 1;                    // JWT Token
+}
+
+// 驗證 Token 回應
+message ValidateTokenResponse {
+  bool valid = 1;                      // Token 是否有效
+  TokenClaims claims = 2;              // Token 內容
+  string error_message = 3;            // 錯誤消息
+}
+
+// 刷新 Token 請求
+message RefreshTokenRequest {
+  string refresh_token = 1;            // Refresh Token
+  string user_id = 2;                  // 用戶 ID（可選，用於額外驗證）
+}
+
+// 刷新 Token 回應
+message RefreshTokenResponse {
+  bool success = 1;                    // 是否成功
+  string access_token = 2;             // 新的 Access Token
+  string refresh_token = 3;            // 新的 Refresh Token（可選）
+  google.protobuf.Timestamp access_expires_at = 4;  // 新 Access Token 過期時間
+  google.protobuf.Timestamp refresh_expires_at = 5; // 新 Refresh Token 過期時間
+  string error_message = 6;            // 錯誤消息
+}
+
+// Token 聲明內容
+message TokenClaims {
+  string user_id = 1;                  // 用戶 ID
+  string username = 2;                 // 用戶名
+  string email = 3;                    // 用戶郵箱
+  Role role = 4;                       // 用戶角色
+  string token_type = 5;               // Token 類型 (access/refresh)
+  google.protobuf.Timestamp issued_at = 6;  // 簽發時間
+  google.protobuf.Timestamp expires_at = 7; // 過期時間
+} 

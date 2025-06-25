@@ -1,0 +1,106 @@
+# WeSio Live 配置範例
+# 此文件展示了所有可用的配置選項
+
+# 服務器配置
+server:
+  host: "0.0.0.0"           # 服務器監聽地址
+  port: 8080                # 服務器端口
+  mode: "development"       # 運行模式：development, production
+
+# 數據庫配置
+database:
+  type: "postgres"          # 數據庫類型：postgres, mysql, sqlite
+  host: "localhost"         # 數據庫主機地址
+  port: 5432               # 數據庫端口
+  user: "wesio"            # 數據庫用戶名
+  password: "password"      # 數據庫密碼
+  dbname: "wesio_live"     # 數據庫名稱
+  sslmode: "disable"       # SSL 模式：disable, require, verify-ca, verify-full
+  max_open_conns: 25       # 最大開放連接數
+  max_idle_conns: 10       # 最大空閒連接數
+  conn_max_lifetime: "5m"  # 連接最大生存時間
+  timezone: "UTC"          # 時區設定
+  # dsn: ""                # 直接指定 DSN (優先級最高)
+
+# 認證配置
+auth:
+  jwt_secret: "your-super-secret-jwt-key-here"  # JWT 密鑰
+  token_expiry: "24h"                           # Token 過期時間
+  refresh_expiry: "168h"                        # Refresh Token 過期時間 (7天)
+
+# 媒體存儲配置
+media:
+  storage_type: "minio"                         # 存儲類型：minio, s3, local
+  endpoint: "localhost:9000"                    # MinIO/S3 端點
+  access_key: "minioadmin"                      # 訪問密鑰
+  secret_key: "minioadmin"                      # 密鑰
+  bucket_name: "wesio-media"                    # 存儲桶名稱
+  use_ssl: false                                # 是否使用 SSL
+  max_upload_size: 104857600                    # 最大上傳大小 (100MB)
+
+# 聊天配置
+chat:
+  max_message_length: 1000                      # 最大消息長度
+  history_limit: 100                            # 歷史消息限制
+
+# 房間配置
+room:
+  max_participants: 50                          # 最大參與者數量
+  default_ttl: "24h"                           # 房間默認存活時間
+
+# 日誌配置
+logger:
+  level: "info"                                 # 日誌級別：debug, info, warn, error
+  format: "json"                                # 日誌格式：json, console
+  output: "stdout"                              # 輸出：stdout, file
+  file: "/var/log/wesio/app.log"               # 當 output 為 file 時的文件路徑
+
+# 消息隊列配置
+message_queue:
+  type: "nats"                                  # 消息隊列類型：nats, kafka, redis
+  servers:                                      # 服務器地址列表
+    - "nats://localhost:4222"
+    # - "nats://node2:4222"
+    # - "nats://node3:4222"
+  username: ""                                  # 用戶名 (可選)
+  password: ""                                  # 密碼 (可選)
+  
+  # TLS 配置
+  tls:
+    enabled: false                              # 是否啟用 TLS
+    cert_file: ""                               # 證書文件路徑
+    key_file: ""                                # 密鑰文件路徑
+    ca_file: ""                                 # CA 文件路徑
+    skip_verify: false                          # 是否跳過證書驗證
+  
+  # NATS 特定配置
+  nats:
+    cluster_id: "wesio-cluster"                 # 集群 ID (NATS Streaming)
+    client_id: "wesio-client"                   # 客戶端 ID
+    max_reconnects: 5                           # 最大重連次數
+    reconnect_wait: "2s"                        # 重連等待時間
+    ping_interval: "20s"                        # Ping 間隔
+    max_pings_out: 2                            # 最大未回應 Ping 數量
+  
+  # Kafka 特定配置
+  kafka:
+    group_id: "wesio-group"                     # 消費者組 ID
+    session_timeout: "10s"                      # 會話超時時間
+    heartbeat_interval: "3s"                    # 心跳間隔
+    retry_backoff: "2s"                         # 重試退避時間
+    required_acks: 1                            # 需要的 ACK 數量
+    compression: "none"                         # 壓縮類型：none, gzip, snappy, lz4, zstd
+  
+  # Redis 特定配置 (作為消息隊列時)
+  redis:
+    db: 0                                       # Redis 數據庫編號
+    pool_size: 10                               # 連接池大小
+    min_idle_conns: 5                           # 最小空閒連接數
+    dial_timeout: "5s"                          # 連接超時時間
+    read_timeout: "3s"                          # 讀取超時時間
+    write_timeout: "3s"                         # 寫入超時時間
+  
+  # 額外選項 (鍵值對格式)
+  options:
+    # custom_option1: "value1"
+    # custom_option2: "value2" 
