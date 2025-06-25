@@ -1,5 +1,4 @@
-module weiawesome/wesio-live/storage
-
+module github.com/weiawesome/wesio-live/storage
 go 1.24.1
 
 require github.com/minio/minio-go/v7 v7.0.94
